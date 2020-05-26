@@ -16,8 +16,9 @@ extract-iso.bat
 :: INSTALLATION (need to be done manually): Reboot the computer
 
 :: PART 3: Cleanup
+:: Uncomment the following scripts after sucessfull installation
 :: Section 1: Reverse the partition state
-partition-cleanup.bat
+REM partition-cleanup.bat
 
 :: Section 2: Cleanup of EFI Boot Loader
-bootloader-cleanup.bat
+REM bootloader-cleanup.bat

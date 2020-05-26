@@ -7,6 +7,9 @@ A small script to speed up the ubuntu installation or any OS that will be instal
 Main script to be executed is *ubuntu-installer-automation.bat*
 Other scripts have to be put under the same directory with the main script
 
+# Execution
+The script is designed for a single partition of GPT disk on Window 10 OS. If your current system fits this description, you can run the main script, start the installation process from ubuntu live environment then go back to finish the cleanup steps. Otherwise, you will need to modify the script in partitioning (Section 2).
+
 # Improvements needed
 * export the information of total volumn of SDD in the pre-installation examination
 * export the information of graphic display (important for other OS for instance: <a href="https://pop.system76.com/">Pop!_OS</a> )
