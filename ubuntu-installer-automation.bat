@@ -1,24 +1,26 @@
 @ECHO OFF
 ECHO bat file worked!
 :: This script needs to be excuted with administration privilige
+
 :: PART 1: Pre-installation
 pre-installation.bat
+
 :: PART 2: Installation
-:: SECTION 1: set rEFInd as default boot loader
+:configureBootLoader
 configure-bootloader.bat
 
-:: SECTION 2: Partitioning
+:partitioning
 partitioning.bat
 
-:: SECTION 3: Installation
+:installation
 extract-iso.bat
 
 :: INSTALLATION (need to be done manually): Reboot the computer
 
 :: PART 3: Cleanup
-:: Uncomment the following scripts after sucessfull installation
-:: Section 1: Reverse the partition state
+:: Uncomment the following scripts after successfull installation
+:reversePartitionState
 REM partition-cleanup.bat
 
-:: Section 2: Cleanup of EFI Boot Loader
+:cleanupEFIBootLoader
 REM bootloader-cleanup.bat
