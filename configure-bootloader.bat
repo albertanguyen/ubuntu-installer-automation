@@ -1,6 +1,5 @@
 @ECHO OFF
 :: This script needs to be excuted with administration privilige
-:: UEFI BIOS mode: set rEFInd as default boot loader
 ECHO ============================
 ECHO CONFIGURE BOOT MANAGER
 ECHO ============================
@@ -8,19 +7,27 @@ GOTO decisionMaker
 
 :decisionMaker
 FOR /F "tokens=4,5 delims=: " %%a IN ("%_os_name%") DO ( SET osname=%%a %%b )
+FOR /F "tokens=3 delims=: " %%a IN ("%_os_ver%") DO ( SET osverfull=%%a )
+FOR /F "tokens=1,2 delims=." %%a IN ("%osverfull%") DO ( SET osver=%%a.%%b)
 SET year=%_bios_ver:~-4%
 SET systype=%_system_type:~-12%
-IF "%year%" LESS "2007" GOTO legacy IF NOT GOTO exitMsg
-IF "%year%" GRT "2007" GOTO uefi IF NOT GOTO exitMsg
+IF %year% LSS 2007 GOTO legacy IF NOT GOTO exitMsg
+IF %year% GTR 2007 (
+    IF %osver% GEQ 6.0 IF %osver% LEQ 6.1 (
+        GOTO legacy
+    ) ELSE (   
+        GOTO uefi
+    )
+)
 
 :uefi
 ECHO ============================
+ECHO CONFIGURE BOOT MGR for UEFI-based PC
 ECHO SET rEFInd AS DEFAULT BOOT LOADER
 ECHO ============================
 GOTO turnoffHibernate
 GOTO mountESP
 GOTO configureESP
-GOTO configureBootMgr
 
 :legacy
 ECHO ============================
@@ -34,9 +41,7 @@ reg query "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled"
 wmic logicaldisk get name
 
 :mountESP
-ECHO ============================
 ECHO Mount ESP
-ECHO ============================
 mountvol S: /S
 mountvol -help
 
@@ -52,16 +57,14 @@ IF /I "%systype%"=="x64-based PC" GOTO x64Arch IF NOT GOTO exitMsg
 :x64Arch
 RMDIR /S /Q drivers_aa64 && del  refind_aa64.efi && RMDIR /S /Q tools_aa64
 RMDIR /S /Q drivers_ia32 && del refind_ia32.efi && RMDIR /S /Q tools_ia32
-
-:x86Arch
-RMDIR /S /Q drivers_aa64 && del  refind_aa64.efi && RMDIR /S /Q tools_aa64
-RMDIR /S /Q drivers_x64 && del refind_x64.efi && RMDIR /S /Q tools_x64
-
-:configureBootMgr
 rename refind.conf-sample refind.conf
 bcdedit /set "{bootmgr}" path \EFI\refind\refind_x64.efi
 bcdedit /set "{bootmgr}" description "rEFInd as the default EFI boot program"
 bcdedit /enum
+
+:x86Arch
+RMDIR /S /Q drivers_aa64 && del  refind_aa64.efi && RMDIR /S /Q tools_aa64
+RMDIR /S /Q drivers_x64 && del refind_x64.efi && RMDIR /S /Q tools_x64
 
 :exitMsg
 ECHO cannot make a decision on Current System
