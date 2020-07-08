@@ -9,7 +9,12 @@ FOR /F "tokens=*" %%i IN ('systeminfo ^| findstr /c:"OS Name"') do (
     SET _os_name=%%i
     ECHO %_os_name%
 )
-:: systeminfo | findstr /c:"OS Version"
+
+FOR /F "tokens=*" %%i IN ('systeminfo ^| findstr /B /c:"OS Version"') do (
+    SET _os_ver=%%i
+    ECHO %_os_ver%
+)
+
 FOR /F "tokens=*" %%i IN ('systeminfo ^| findstr /c:"BIOS Version"') do (
     SET _bios_ver=%%i
     ECHO %_bios_ver%
@@ -32,6 +37,7 @@ systeminfo | findstr /c:"Virtual Memory: Max Size"
 systeminfo | findstr /c:"Boot Device"
 systeminfo | findstr /c:"Total Physical Memory"
 systeminfo | findstr /c:"Virtual Memory: Max Size"
+bcdedit /enum
 
 :diskInfo
 ECHO ============================
@@ -46,3 +52,4 @@ ECHO LIST VOLUME >> partition-info.scr
 @ECHO ON
 diskpart /s partition-info.scr
 del partition-info.scr
+
