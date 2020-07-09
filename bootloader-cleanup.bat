@@ -5,7 +5,7 @@ ECHO bat file worked!
 IF /I "%systype%"=="x86-based PC" (
     ECHO configure boot manager for x86 Arch
 ) ELSE (
-    GOTO :commonExit
+    EXIT /b 1
 )
 IF /I "%systype%"=="x64-based PC" (
     ECHO ============================
@@ -15,7 +15,7 @@ IF /I "%systype%"=="x64-based PC" (
     bcdedit /set "{bootmgr}" path \EFI\Boot\bootx64.efi
     bcdedit /set "{bootmgr}" description "default UEFI boot"
 ) ELSE (
-    GOTO :commonExit
+    EXIT /b 1
 )
 ECHO ============================
 ECHO Unmount ESP
@@ -30,5 +30,3 @@ ECHO ============================
 powercfg /h on
 reg query "HKLM\SYSTEM\CurrentControlSet\Control\Power" /v "HibernateEnabled"
 
-:commonExit
-EXIT /b 1
